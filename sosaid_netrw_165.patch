@@ -1,0 +1,229 @@
+--- /usr/share/vim/vim81/autoload/netrw.vim	2019-10-22 14:17:42.000000000 +0200
++++ netrw.vim	2021-03-15 08:22:11.023157482 +0100
+@@ -1,4 +1,13 @@
+ " netrw.vim: Handles file transfer and remote directory listing across
++" 
++" sosaid_netrw_165.patch: sosaid (sosreport aid) will help you quickly explore many files with very little effort
++"
++" SosaidReleaseDate:	Mar 15, 2021
++" AuthorOfTheSosaid:	Josef Kubin
++" ContactIsInBase64:	SVJDOiBqa2IKamt1YmluQHJlZGhhdC5jb20KbTR1bml4QGdtYWlsLmNvbQo=
++" GitRepositoryURL1:	https://gitlab.cee.redhat.com/jkubin/sosaid
++" GitRepositoryURL2:	https://github.com/jkubin/sosaid
++"
+ "            AUTOLOAD SECTION
+ " Date:		Jul 16, 2019
+ " Version:	165
+@@ -52,6 +61,29 @@
+ "DechoRemOn
+ "call Decho("doing autoload/netrw.vim version ".g:loaded_netrw,'~'.expand("<slnum>"))
+ 
++" ===========================================
++" Settings Of The Original Netrw Plugin: {{{1
++" ===========================================
++" ---------------------------------------------------------------------
++":h netrw			" see the `netrw` documentation for more details
++
++" Initial position of the preview window:
++"
++" g:netrw_preview   g:netrw_alto
++"    1 : vert        1: top       -- preview window is vertically   split off and on the left
++"    1 : vert        0: bot       -- preview window is vertically   split off and on the right
++"    0 :             1: top       -- preview window is horizontally split off and on the top
++"    0 :             0: bot       -- preview window is horizontally split off and on the bottom
++
++"let g:netrw_preview = 1
++"let g:netrw_alto    = 0
++
++let g:netrw_liststyle = 1		" long listing (one file per line with time stamp information and file size)
++let g:netrw_quiet     = 1		" suppress unnecessary noise
++let g:netrw_timefmt   = "%Y%m%d.%T"	" specify time format string, see $ man strftime
++
++set noswapfile			" swap file is unnecessary
++
+ " ======================
+ "  Netrw Variables: {{{1
+ " ======================
+@@ -301,8 +333,8 @@
+ " Default values - a-c ---------- {{{3
+ call s:NetrwInit("g:netrw_alto"        , &sb)
+ call s:NetrwInit("g:netrw_altv"        , &spr)
+-call s:NetrwInit("g:netrw_banner"      , 1)
+-call s:NetrwInit("g:netrw_browse_split", 0)
++call s:NetrwInit("g:netrw_banner"      , 0)
++call s:NetrwInit("g:netrw_browse_split", 3)
+ call s:NetrwInit("g:netrw_bufsettings" , "noma nomod nonu nobl nowrap ro nornu")
+ call s:NetrwInit("g:netrw_chgwin"      , -1)
+ call s:NetrwInit("g:netrw_compress"    , "gzip")
+@@ -6452,6 +6484,14 @@
+    nnoremap <buffer> <silent> <nowait> X	:<c-u>call <SID>NetrwLocalExecute(expand("<cword>"))"<cr>
+ 
+    nnoremap <buffer> <silent> <nowait> r	:<c-u>let g:netrw_sort_direction= (g:netrw_sort_direction =~# 'n')? 'r' : 'n'<bar>exe "norm! 0"<bar>call <SID>NetrwRefresh(1,<SID>NetrwBrowseChgDir(1,'./'))<cr>
++
++   " shortcuts for sosaid
++   nnoremap <buffer> <silent> <nowait> <c-k>	:<c-u>call <SID>NetrwBrowseUpDir(1)<cr>
++   nnoremap <buffer> <silent> <nowait> <c-j>	:<c-u>call netrw#LocalBrowseCheck(<SID>NetrwBrowseChgDir(1,<SID>NetrwGetWord()))<cr>
++   nnoremap <buffer> <silent> <nowait> j	<down>:<c-u>call <SID>NetrwPreview(<SID>NetrwBrowseChgDir(1,<SID>NetrwGetWord(),1))<cr>
++   nnoremap <buffer> <silent> <nowait> k	<up>:<c-u>call <SID>NetrwPreview(<SID>NetrwBrowseChgDir(1,<SID>NetrwGetWord(),1))<cr>
++   " shortcuts for sosaid
++
+    if !hasmapto('<Plug>NetrwHideEdit')
+     nmap <buffer> <unique> <c-h> <Plug>NetrwHideEdit
+    endif
+@@ -8734,42 +8774,39 @@
+    NetrwKeepj call s:NetrwOptionsSafe(0)
+   endif
+   if has("quickfix")
+-"   call Decho("has quickfix",'~'.expand("<slnum>"))
+-   if !isdirectory(s:NetrwFile(a:path))
+-"    call Decho("good; not previewing a directory",'~'.expand("<slnum>"))
+-    if g:netrw_preview
+-     " vertical split
+-     let pvhkeep = &pvh
+-     let winsz   = (g:netrw_winsize > 0)? (g:netrw_winsize*winwidth(0))/100 : -g:netrw_winsize
+-     let &pvh    = winwidth(0) - winsz
+-"     call Decho("g:netrw_preview: winsz=".winsz." &pvh=".&pvh." (temporarily)  g:netrw_winsize=".g:netrw_winsize,'~'.expand("<slnum>"))
+-    else
+-     " horizontal split
+-     let pvhkeep = &pvh
+-     let winsz   = (g:netrw_winsize > 0)? (g:netrw_winsize*winheight(0))/100 : -g:netrw_winsize
+-     let &pvh    = winheight(0) - winsz
+-"     call Decho("!g:netrw_preview: winsz=".winsz." &pvh=".&pvh." (temporarily)  g:netrw_winsize=".g:netrw_winsize,'~'.expand("<slnum>"))
+-    endif
+-    " g:netrw_preview   g:netrw_alto
+-    "    1 : vert        1: top       -- preview window is vertically   split off and on the left
+-    "    1 : vert        0: bot       -- preview window is vertically   split off and on the right
+-    "    0 :             1: top       -- preview window is horizontally split off and on the top
+-    "    0 :             0: bot       -- preview window is horizontally split off and on the bottom
+-    "
+-    " Note that the file being previewed is already known to not be a directory, hence we can avoid doing a LocalBrowse() check via
+-    " the BufEnter event set up in netrwPlugin.vim
+-"    call Decho("exe ".(g:netrw_alto? "top " : "bot ").(g:netrw_preview? "vert " : "")."pedit ".fnameescape(a:path),'~'.expand("<slnum>"))
++
++   let apath = s:NetrwFile(a:path)
++
++   if getftype(apath) == "link"
++     let apath = resolve(apath)
++
++     if isdirectory(apath)
++       let apath .= "/"
++     endif
++   endif
++
++   let pvhkeep = &pvh
++
++   if g:netrw_preview
++    " vertical split
++    let winsz   = (g:netrw_winsize > 0)? (g:netrw_winsize*winwidth(0))/100 : -g:netrw_winsize
++    let &pvh    = winwidth(0) - winsz
++   else
++    " horizontal split
++    let winsz   = (g:netrw_winsize > 0)? (g:netrw_winsize*winheight(0))/100 : -g:netrw_winsize
++    let &pvh    = winheight(0) - winsz
++   endif
++
++   if isdirectory(apath)
++    exe (g:netrw_alto? "top " : "bot ").(g:netrw_preview? "vert " : "")."pedit ".fnameescape(apath) . "."
++   else
+     let eikeep = &ei
+     set ei=BufEnter
+-    exe (g:netrw_alto? "top " : "bot ").(g:netrw_preview? "vert " : "")."pedit ".fnameescape(a:path)
++    exe (g:netrw_alto? "top " : "bot ").(g:netrw_preview? "vert " : "")."pedit ".fnameescape(apath)
+     let &ei= eikeep
+-"    call Decho("winnr($)=".winnr("$"),'~'.expand("<slnum>"))
+-    if exists("pvhkeep")
+-     let &pvh= pvhkeep
+-    endif
+-   elseif !exists("g:netrw_quiet")
+-    NetrwKeepj call netrw#ErrorMsg(s:WARNING,"sorry, cannot preview a directory such as <".a:path.">",38)
+    endif
++
++   let &pvh= pvhkeep
+   elseif !exists("g:netrw_quiet")
+    NetrwKeepj call netrw#ErrorMsg(s:WARNING,"sorry, to preview your vim needs the quickfix feature compiled in",39)
+   endif
+@@ -10847,6 +10884,11 @@
+ "  call Decho("g:netrw_banner=".g:netrw_banner.": banner ".(g:netrw_banner? "enabled" : "suppressed").": (line($)=".line("$")." byte2line(1)=".byte2line(1)." bannercnt=".w:netrw_bannercnt.")",'~'.expand("<slnum>"))
+ 
+   for filename in filelist
++
++   if filename =~ "/.$" || filename =~ "/..$"
++     continue
++   endif
++
+ "   call Decho(" ",'~'.expand("<slnum>"))
+ "   call Decho("for filename in filelist: filename<".filename.">",'~'.expand("<slnum>"))
+ "   call DechoBuf(bufnr("%"),"COMBAK#1")
+@@ -10854,22 +10896,34 @@
+    if getftype(filename) == "link"
+     " indicate a symbolic link
+ "    call Decho("indicate <".filename."> is a symbolic link with trailing @",'~'.expand("<slnum>"))
+-    let pfile= filename."@"
++    let pfile= filename . "@  -> " . substitute(resolve(filename), b:netrw_curdir.'/', '', '')
++    let pref = "l"
+ 
+    elseif getftype(filename) == "socket"
+     " indicate a socket
+ "    call Decho("indicate <".filename."> is a socket with trailing =",'~'.expand("<slnum>"))
+     let pfile= filename."="
++    let pref = "s"
+ 
+    elseif getftype(filename) == "fifo"
+     " indicate a fifo
+ "    call Decho("indicate <".filename."> is a fifo with trailing |",'~'.expand("<slnum>"))
+     let pfile= filename."|"
++    let pref = "p"
++
++   elseif getftype(filename) == "bdev"
++    let pfile= filename
++    let pref = "b"
++
++   elseif getftype(filename) == "cdev"
++    let pfile= filename
++    let pref = "c"
+ 
+    elseif isdirectory(s:NetrwFile(filename))
+     " indicate a directory
+ "    call Decho("indicate <".filename."> is a directory with trailing /",'~'.expand("<slnum>"))
+     let pfile= filename."/"
++    let pref = "d"
+ 
+    elseif exists("b:netrw_curdir") && b:netrw_curdir !~ '^.*://' && !isdirectory(s:NetrwFile(filename))
+     if (has("win32") || has("win95") || has("win64") || has("win16"))
+@@ -10890,9 +10944,11 @@
+      let pfile= filename
+     endif
+ 
++    let pref = "-"
+    else
+     " normal file
+     let pfile= filename
++    let pref = "-"
+    endif
+ "   call Decho("pfile<".pfile."> (after *@/ appending)",'~'.expand("<slnum>"))
+ 
+@@ -10907,12 +10963,8 @@
+ 
+    if w:netrw_liststyle == s:LONGLIST
+     let sz   = getfsize(filename)
+-    if g:netrw_sizestyle =~# "[hH]"
+-     let sz= s:NetrwHumanReadable(sz)
+-    endif
+-    let fsz     = strpart("               ",1,15-strlen(sz)).sz
+-    let longfile= printf("%-".(g:netrw_maxfilenamelen+1)."s",pfile)
+-    let pfile   = longfile.fsz." ".strftime(g:netrw_timefmt,getftime(filename))
++    let longfile= printf("%-32s %9d ", pfile, sz)
++    let pfile   = longfile.pref.getfperm(filename)." ".strftime(g:netrw_timefmt, getftime(filename))
+ "    call Decho("longlist support: sz=".sz." fsz=".fsz,'~'.expand("<slnum>"))
+    endif
+ 
+@@ -10946,7 +10998,8 @@
+   endfor
+ 
+   " cleanup any windows mess at end-of-line
+-  sil! NetrwKeepj g/^$/d
++  "sil! NetrwKeepj g/^$/d	<--- the first line is always empty
++  sil! NetrwKeepj 0d
+   sil! NetrwKeepj %s/\r$//e
+   call histdel("/",-1)
+ "  call Decho("exe setl ts=".(g:netrw_maxfilenamelen+1),'~'.expand("<slnum>"))
