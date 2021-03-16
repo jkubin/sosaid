@@ -24,7 +24,7 @@ $ sed -n '/^" Version:\t/s///p' netrw.vim
 $ patch < sosaid_netrw_170.patch
 $ rm ~/.vim/autoload/netrw.vim		<--- uninstall
 ```
-Is there not an exact version in the repository?
+Is not there an exact version in the repository?
 Try to apply the closest patch.
 
 ## How to use the plugin?
@@ -48,15 +48,18 @@ $ vim .
 | `k` | ↑ go up and preview the previous file or the directory listing |
 | `Ctrl-k` | ↑ go up one level from the current directory |
 
-## Auxiliary shortcuts from the plugin
+## Auxiliary shortcuts (also defined in `.vimrc`)
 | Shortcut | Functionality |
 | -------- | ------------- |
 | `p` | display the item in the preview window (the first or the only item in the directory) |
 | `Enter` | same as `Ctrl-j` |
 | `Ctrl-l` | turn off the **highlighted** search string instead of typing `:noh` |
-| `\ r` | list Vim [registers](#how-to-copy-a-register-to-the-command-line) |
-| `\ w` | show/hide white characters |
-| `\ W` | wrap/unwrap long lines |
+| `\` `c` | show/hide white characters |
+| `\` `h` | split window horizontally |
+| `\` `r` | list Vim [registers](#how-to-copy-a-register-to-the-command-line) |
+| `\` `s` | sort a paragraph |
+| `\` `v` | split window vertically |
+| `\` `w` | wrap/unwrap long lines |
 
 ## How to process an examined file (command-line mode)
 | Command | Functionality |
@@ -70,8 +73,8 @@ $ vim .
 ## How to copy a string to the command line
 - `^r^w` means press `Ctrl-r` `Ctrl-w` to copy a `word` under the cursor to the command line
 - `^r^a` means press `Ctrl-r` `Ctrl-a` to copy a `w:o-r.d` under the cursor to the command line
-- `^r^/` means press `Ctrl-r` `Ctrl-/` to copy the **\\<highlighted string\\>** (pressed `*` or `#`) to the command line
-- `^r^/` means press `Ctrl-r` `Ctrl-/` to copy the **highlighted string** (pressed `g *` or `g #`) to the command line
+- `^r^/` means press `Ctrl-r` `Ctrl-/` to copy the **\\<highlighted string\\>** (after `*` or `#`) to the command line
+- `^r^/` means press `Ctrl-r` `Ctrl-/` to copy the **highlighted string** (after `g` `*` or `g` `#`) to the command line
 
 | Command | Functionality |
 | -------- | ------------- |
@@ -90,9 +93,11 @@ $ vim .
 ## Built-in shortcuts (normal mode)
 | Shortcut | Functionality |
 | -------- | ------------- |
-| `H` | move to **H**igh or **H**ome of the window |
-| `M` | move to **M**iddle line of the window |
-| `L` | move to **L**ow or **L**ast line of the window  |
+| `H` | move cursor to **H**igh or **H**ome of the window |
+| `M` | move cursor to **M**iddle of the window |
+| `L` | move cursor to **L**ow or **L**ast of the window  |
+| `G` | jump to the end of file (the ending is sometimes the most interesting part) |
+| `gg` | jump to the beginning of the file |
 | `Ctrl-d` | scroll down half a screen |
 | `Ctrl-u` | scroll up half a screen |
 | `Ctrl-f` | scroll down a screen |
@@ -108,7 +113,7 @@ $ vim .
 | `Ctrl-w H` | move the active window to the right (vertical split window) |
 | `Ctrl-w L` | move the active window to the left (vertical split window) |
 | `Ctrl-w Ctrl-w` | move the cursor to the adjacent split window |
-| `Ctrl-c` | cancels the listing of files in the directory (too many files) |
+| `Ctrl-c` | cancel the listing of files in the directory (too many files) |
 | `Ctrl-g` | print the full file name to the status bar |
 
 ## Vim help, shortcuts, registers, quickref
@@ -134,5 +139,13 @@ $ sed -n '/^" Version:\t/s///p' /usr/share/vim/vim??/autoload/netrw.vim
 165
 $ diff -u /usr/share/vim/vim??/autoload/netrw.vim ~/.vim/autoload/netrw.vim > sosaid_netrw_165.patch
 ```
+
+## Patches overview
+| Release | Patch |
+| ------- | ----- |
+| RHEL6.10, RHEL7.9 | sosaid_netrw_149.patch |
+| RHEL8.3 | sosaid_netrw_156.patch |
+| Fedora 29 | sosaid_netrw_165.patch |
+| Fedora 33 | sosaid_netrw_170.patch |
 
 ---
