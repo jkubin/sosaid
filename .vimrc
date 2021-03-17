@@ -15,3 +15,9 @@ nnoremap <silent><c-l> :nohlsearch<cr><c-l>	" turn off the **highlighted** searc
 nnoremap <silent><leader>c :set list!<cr>	" show/hide white characters, sometimes a source of nasty invisible bugs
 nnoremap <silent><leader>s vip:sort<cr>		" sort a paragraph
 nnoremap <silent><leader>w :set wrap!<cr>	" wrap/unwrap long lines
+noremap <f1> <esc>				" disable annoying help
+
+" Other shortcuts
+iabbrev fxm FIXME:
+iabbrev tdu TODO:
+imap <f1> <esc>		" disable annoying help
