@@ -1,5 +1,5 @@
 # sosaid (sosreport aid)
-This is a patch for a `netrw` plugin in Vim, which allows you to quickly explore many files with very little effort.  
+This is a patch for a `netrw` plugin in **Vim**, which allows you to quickly explore many files with very little effort.  
 The resulting modified plugin is especially suitable for quick exploration of [sosreports](https://access.redhat.com/solutions/3592).
 
 ## What the patch offers?
