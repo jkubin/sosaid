@@ -56,7 +56,7 @@ $ vim .
 | `Ctrl-l` | turn off the **highlighted** search string instead of typing `:noh` |
 | `\` `c` | show/hide white characters |
 | `\` `h` | split window horizontally |
-| `\` `r` | list Vim [registers](#how-to-copy-a-register-to-the-command-line) |
+| `\` `r` | list Vim [registers](#how-to-paste-a-register-to-the-command-line) |
 | `\` `s` | sort a paragraph |
 | `\` `v` | split window vertically |
 | `\` `w` | wrap/unwrap long lines |
@@ -70,25 +70,25 @@ $ vim .
 | `:w result.txt` | write the processed data to the `result.txt` file |
 | `:tabonly` | Too many tabs opened? Close all but the current one. |
 
-## How to copy a string to the command line
-- `^r^w` means press `Ctrl-r` `Ctrl-w` to copy a `word` under the cursor to the command line
-- `^r^a` means press `Ctrl-r` `Ctrl-a` to copy a `w:o-r.d` under the cursor to the command line
-- `^r^/` means press `Ctrl-r` `Ctrl-/` to copy the **\\<highlighted string\\>** (after `*` or `#`) to the command line
-- `^r^/` means press `Ctrl-r` `Ctrl-/` to copy the **highlighted string** (after `g` `*` or `g` `#`) to the command line
+## How to paste a string to the command line
+- `^r` `^w` means press `Ctrl-r` `Ctrl-w` to paste a `word` under the cursor to the command line
+- `^r` `^a` means press `Ctrl-r` `Ctrl-a` to paste a `w:o-r.d` under the cursor to the command line
+- `^r` `/` means press `Ctrl-r` `/` to paste the **\\<highlighted string\\>** (after `*` or `#`) to the command line
+- `^r` `/` means press `Ctrl-r` `/` to paste the **highlighted string** (after `g` `*` or `g` `#`) to the command line
 
 | Command | Functionality |
 | -------- | ------------- |
-| `:v/^r^w/d` | copy the `word` from examined file to the command line |
-| `:v/^r^a/d` | copy the `w:o-r.d` from examined file to the command line |
-| `:g/^r^//d` | copy the highlighted search string to the command line |
+| :v/`^r` `^w`/d | paste the `word` from examined file to the command line |
+| :v/`^r` `^a`/d | paste the `w:o-r.d` from examined file to the command line |
+| :g/`^r` `/`/d | paste the highlighted search string to the command line |
 | `Ctrl-c` | cancel the command line and put the cursor to another `word` |
 
-## How to copy a register to the command line
-- `^r^"` means press `Ctrl-r` `"` to copy the [unnamed register](#vim-help-shortcuts-registers-quickref) to the command line
+## How to paste a register to the command line
+- `^r` `"` means press `Ctrl-r` `"` to paste the [unnamed register](#vim-help-shortcuts-registers-quickref) to the command line
 
 | Shortcut | Functionality |
 | -------- | ------------- |
-| `:g/^r"/d` | copy the unnamed register to the command line |
+| :g/`^r` `"`/d | paste the unnamed register to the command line |
 
 ## Built-in shortcuts (normal mode)
 | Shortcut | Functionality |
@@ -97,7 +97,7 @@ $ vim .
 | `M` | move cursor to **M**iddle of the window |
 | `L` | move cursor to **L**ow or **L**ast of the window  |
 | `G` | jump to the end of file (the ending is sometimes the most interesting part) |
-| `gg` | jump to the beginning of the file |
+| `g` `g` | jump to the beginning of the file |
 | `Ctrl-d` | scroll down half a screen |
 | `Ctrl-u` | scroll up half a screen |
 | `Ctrl-f` | scroll down a screen |
@@ -106,13 +106,13 @@ $ vim .
 | `?filename` | search backward for a filename |
 | `n` | search forward for a next filename |
 | `N` | search backward for a previous filename |
-| `gt` | move to the next tab |
+| `g` `t` | move to the next tab |
 | `Ctrl-PageDown` | move to the next tab (does not work in the `screen` program) |
-| `gT` | move to the previous tab |
+| `g` `T` | move to the previous tab |
 | `Ctrl-PageUp` | move to the previous tab (does not work in the `screen` program) |
-| `Ctrl-w H` | move the active window to the right (vertical split window) |
-| `Ctrl-w L` | move the active window to the left (vertical split window) |
-| `Ctrl-w Ctrl-w` | move the cursor to the adjacent split window |
+| `Ctrl-w` `H` | move the active window to the right (vertical split window) |
+| `Ctrl-w` `L` | move the active window to the left (vertical split window) |
+| `Ctrl-w` `Ctrl-w` | move the cursor to the adjacent split window |
 | `Ctrl-c` | cancel the listing of files in the directory (too many files) |
 | `Ctrl-g` | print the full file name to the status bar |
 
