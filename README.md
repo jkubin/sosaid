@@ -102,8 +102,8 @@ $ vim .
 | `Ctrl-u` | scroll up half a screen |
 | `Ctrl-f` | scroll down a screen |
 | `Ctrl-b` | scroll up a screen |
-| `/filename` | search forward for a filename |
-| `?filename` | search backward for a filename |
+| `/` `filename` | search forward for a filename |
+| `?` `filename` | search backward for a filename |
 | `n` | search forward for a next filename |
 | `N` | search backward for a previous filename |
 | `g` `t` | move to the next tab |
